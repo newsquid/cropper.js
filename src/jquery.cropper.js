@@ -42,7 +42,7 @@ var cropper = (function($) {
             var jcrop_settings = {
                 bgColor: 'black',
                 bgOpacity: .6,
-                setSelect: [0, 0, 858, 858],
+                setSelect: [options.rawWidth / 4, options.rawHeight / 4, (3 * options.rawWidth) / 4, (3 * options.rawHeight) / 4],
                 onSelect: set_output,
                 onChange: set_output
             };
@@ -60,9 +60,7 @@ var cropper = (function($) {
         new_crop_modal: function(options, callback) {
             return new CropModal(options, callback);
         },
-        prompt_crop_image: function(file, options, callback) {
-            var crop_modal = new CropModal(options, callback);
-
+        prompt_crop_image: function(file, options, callback) {   
             var reader = new FileReader();
             reader.onload = (function(img_file) {
                 return function(e) {
@@ -70,11 +68,20 @@ var cropper = (function($) {
                     image.src = e.target.result;
                     image.onload = function() {
                         var canvas = document.createElement('canvas');
-                        canvas.width = image.width < 858 ? image.width : 858;
-                        canvas.height = image.height * (canvas.width / image.width);
+                        
+                        var raw_width = image.width < 858 ? image.width : 858;
+                        $.extend(options, {
+                            rawWidth: raw_width,
+                            rawHeight: image.height * (raw_width / image.width)
+                        });
+                        
+                        var crop_modal = new CropModal(options, callback);
+                        
+                        canvas.width = options.rawWidth;
+                        canvas.height = options.rawHeight;
                         var ctx = canvas.getContext('2d');
                         ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-
+                        
                         crop_modal.set_image(canvas.toDataURL());
                     };
                 }
