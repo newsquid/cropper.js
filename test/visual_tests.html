@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>cropper.js Visual Tests</title>
+        <meta charset="utf-8">
+        <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script src="../src/jquery.cropper.js"></script>
+    </head>
+    <body>
+       <h1>cropper.crop_image(img, { x: 40, y: 40, w: 150, h: 150 })</h1>
+       <div id="crop_image">
+           <img src="test_image.jpg">
+       </div> 
+       <script>
+           $(document).ready(function() {
+               var $img = $("#crop_image img")[0];
+               $img.onload = function() {
+                   var img_data = cropper.crop_image($("#crop_image img")[0], {
+                       x: 40, y: 40, w: 150, h: 150
+                   });
+                   $("#crop_image").append(['<img src="', img_data, '">'].join(''));
+               };
+           });
+       </script>
+    </body>
+</html>
