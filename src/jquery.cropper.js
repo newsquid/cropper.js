@@ -56,9 +56,7 @@ var cropper = (function($) {
     };
 
     return {
-        crop_image: function(file, selection) {
-            return crop_image(file, selection);
-        },
+        crop_image: crop_image,
         new_crop_modal: function(options, callback) {
             return new CropModal(options, callback);
         },
