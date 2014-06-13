@@ -27,7 +27,7 @@
            });
        </script>
 
-       <h1>btn.trigger_cropping({ x: 16, y: 9 }, callback)</h1>
+       <h1>btn.trigger_cropping({ aspectRatio: 16/9, scaleWidth: 650 }, callback)</h1>
        <div id="trigger_cropping">
             <input type="file" class="file_select">
 
@@ -36,7 +36,8 @@
        <script>
             $(document).ready(function() {
                 $("#trigger_cropping .file_select").trigger_cropping({
-                    x: 16, y: 9
+                    aspectRatio: 16/9,
+                    scaleWidth: 650
                 }, function(img_url) {
                     $("#trigger_cropping .result").html(
                         ['<img src="', img_url, '">'].join('')
