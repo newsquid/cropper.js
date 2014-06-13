@@ -47,11 +47,8 @@ var cropper = (function($) {
                 onChange: set_output
             };
             
-            console.log("xywh" + (options.rawWidth/4) + ";" + (options.rawHeight/4) + ";" + (options.rawWidth/2) + ";" + (options.rawHeight/2));
-            
             if(options.aspectRatio) {
                 $.extend(jcrop_settings, { aspectRatio: options.aspectRatio });
-                console.log("Aspect ratio: "+options.aspectRatio);
             }
             
             $img.Jcrop(jcrop_settings);
