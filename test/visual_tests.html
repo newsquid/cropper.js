@@ -9,41 +9,87 @@
         <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
         <script src="../dependencies/jquery.Jcrop.min.js"></script>
         <script src="../src/jquery.cropper.js"></script>
+        <style type="text/css">
+            html {
+                text-align: center;
+            }
+            body {
+                width: 100%;
+                max-width: 1000px;
+                margin-top: 20px;
+                display: inline-block;
+                text-align: left;
+            }
+        </style>
     </head>
     <body>
-       <h1>cropper.crop_image(img, { x: 40, y: 40, w: 150, h: 150 })</h1>
-       <div id="crop_image">
-           <img src="test_image.jpg">
-       </div> 
-       <script>
-           $(document).ready(function() {
-               var $img = $("#crop_image img")[0];
-               $img.onload = function() {
-                   var img_data = cropper.crop_image($("#crop_image img")[0], {
-                       x: 40, y: 40, w: 150, h: 150
-                   });
-                   $("#crop_image").append(['<img src="', img_data, '">'].join(''));
-               };
-           });
-       </script>
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#crop_image" data-toggle="tab">crop_image</a></li>
+            <li><a href="#trigger_cropping" data-toggle="tab">$(...).trigger_cropping</a></li>
+            <li><a href="#trigger_cropping_2" data-toggle="tab">$(...).trigger_cropping (2)</a></li>
+        </ul>
+        
+        <div class="tab-content">
+            <div class="tab-pane active" id="crop_image">
+            
+                <h1>cropper.crop_image(img, { x: 40, y: 40, w: 150, h: 150 })</h1>
+                <div>
+                    <img src="test_image.jpg">
+                </div> 
+                <script>
+                    $(document).ready(function() {
+                        var $img = $("#crop_image img")[0];
+                        $img.onload = function() {
+                            var img_data = cropper.crop_image($("#crop_image img")[0], {
+                                x: 40, y: 40, w: 150, h: 150
+                            });
+                            $("#crop_image").append(['<img src="', img_data, '">'].join(''));
+                        };
+                    });
+                </script>
+                
+            </div>
+            <div class="tab-pane" id="trigger_cropping">
 
-       <h1>btn.trigger_cropping({ aspectRatio: 16/9, scaleWidth: 650 }, callback)</h1>
-       <div id="trigger_cropping">
-            <input type="file" class="file_select">
+                <h1>btn.trigger_cropping({ aspectRatio: 16/9, scaleWidth: 650 }, callback)</h1>
+                <div id="trigger_cropping">
+                    <input type="file" class="file_select">
 
-            <div class="result"></div>
-       </div>
-       <script>
-            $(document).ready(function() {
-                $("#trigger_cropping .file_select").trigger_cropping({
-                    aspectRatio: 16/9,
-                    scaleWidth: 650
-                }, function(img_url) {
-                    $("#trigger_cropping .result").html(
-                        ['<img src="', img_url, '">'].join('')
-                    );
-                });
-            });
-       </script>
+                    <div class="result"></div>
+                </div>
+                <script>
+                    $(document).ready(function() {
+                        $("#trigger_cropping .file_select").trigger_cropping({
+                            aspectRatio: 16/9,
+                            scaleWidth: 650
+                        }, function(img_url) {
+                            $("#trigger_cropping .result").html(
+                                ['<img src="', img_url, '">'].join('')
+                            );
+                        });
+                    });
+                </script>
+                
+            </div>
+            <div class="tab-pane" id="trigger_cropping_2">
+
+                <h1>btn.trigger_cropping({}, callback)</h1>
+                <div id="trigger_cropping">
+                    <input type="file" class="file_select">
+
+                    <div class="result"></div>
+                </div>
+                <script>
+                    $(document).ready(function() {
+                        $("#trigger_cropping_2 .file_select").trigger_cropping({}, function(img_url) {
+                            $("#trigger_cropping_2 .result").html(
+                                ['<img src="', img_url, '">'].join('')
+                            );
+                        });
+                    });
+                </script>
+                
+            </div>
+        </div>
     </body>
 </html>
