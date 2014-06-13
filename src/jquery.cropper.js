@@ -39,14 +39,19 @@ var cropper = (function($) {
                 $modal.modal('hide');
             }).attr("disabled", null);
 
-            $img.Jcrop({
+            var jcrop_settings = {
                 bgColor: 'black',
                 bgOpacity: .6,
                 setSelect: [0, 0, 858, 858],
-                aspectRatio: options.aspectRatio,
                 onSelect: set_output,
                 onChange: set_output
-            });
+            };
+            
+            if(options.aspectRatio) {
+                $.extend(jcrop_settings, { aspectRatio: options.aspectRatio });
+            }
+            
+            $img.Jcrop(jcrop_settings);
         }
     };
 
