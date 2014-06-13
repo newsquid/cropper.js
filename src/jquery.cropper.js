@@ -15,25 +15,32 @@ var cropper = (function($) {
         
         this.output = "data:text;base64,not set";
 
-        console.log("not implemented: open modal");
-        this.$modal = $("#modal");
-        console.log("not implemented: set save button to trigger upload");
+        this.$modal = $('<div class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal">&times;</button><h4 class="modal-title">Crop Image</h4></div><div class="modal-body"></div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button><button type="button" class="btn btn-primary submit-crop" disabled>Submit cropping</button></div></div></div></div>').appendTo("body").modal({
+            backdrop: 'static'
+        });
 
         this.set_image = function(img_url) {
-            console.log("not implemented: set image");
-            var $img = $("#lolfail")[0];
-            console.log("not implemented: get image");
+            var $img = $('<img src="'+img_url+'">').appendTo(this.$modal.find('.modal-body'));
 
-            console.log("not included dependency: Jcrop");
+            var crop_modal = this;
+            var $modal = this.$modal;
+            var submit_crop_btn = $modal.find('.submit-crop');
 
             var set_output = function(selection) {
-                this.output = crop_image($img, selection);
+                if(selection.h > 0 && selection.w > 0) {
+                    crop_modal.output = crop_image($img[0], selection);
+                }
             }
+
+            submit_crop_btn.click(function() {
+                callback(crop_modal.output);
+                $modal.modal('hide');
+            }).attr("disabled", null);
 
             $img.Jcrop({
                 bgColor: 'black',
                 bgOpacity: .6,
-                setSelect: [0, 0, dimension.x, dimension.y],
+                setSelect: [0, 0, dimension.x * 10, dimension.y * 10],
                 aspectRatio: dimension.x / dimension.y,
                 onSelect: set_output,
                 onChange: set_output
@@ -83,8 +90,8 @@ var cropper = (function($) {
             cropper.prompt_crop_image(file, dimensions, callback);
         }
 
-        this.addEventListener('click', function() {this.value = null;}, false);
-        this.addEventListener('change', start_cropping, false);
+        this[0].addEventListener('click', function() {this.value = null;}, false);
+        this[0].addEventListener('change', start_cropping, false);
     }
 
     $.fn.trigger_cropping = register_trigger;

@@ -3,7 +3,11 @@
     <head>
         <title>cropper.js Visual Tests</title>
         <meta charset="utf-8">
+        <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="../dependencies/jquery.Jcrop.min.css">
         <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+        <script src="../dependencies/jquery.Jcrop.min.js"></script>
         <script src="../src/jquery.cropper.js"></script>
     </head>
     <body>
@@ -21,6 +25,24 @@
                    $("#crop_image").append(['<img src="', img_data, '">'].join(''));
                };
            });
+       </script>
+
+       <h1>btn.trigger_cropping({ x: 16, y: 9 }, callback)</h1>
+       <div id="trigger_cropping">
+            <input type="file" class="file_select">
+
+            <div class="result"></div>
+       </div>
+       <script>
+            $(document).ready(function() {
+                $("#trigger_cropping .file_select").trigger_cropping({
+                    x: 16, y: 9
+                }, function(img_url) {
+                    $("#trigger_cropping .result").html(
+                        ['<img src="', img_url, '">'].join('')
+                    );
+                });
+            });
        </script>
     </body>
 </html>
