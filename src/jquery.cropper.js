@@ -1,21 +1,23 @@
 var cropper = (function($) {
-    var crop_image = function(img, selection) {
+    var crop_image = function(img, selection, scaleWidth) {
+        var should_scale_width = scaleWidth !== undefined;
+
         var output_canvas = document.createElement('canvas');
-        output_canvas.width = selection.w;
-        output_canvas.height = selection.h;
+        output_canvas.width = should_scale_width ? scaleWidth : selection.w;
+        output_canvas.height = should_scale_width ? scaleWidth * (selection.h/selection.w) : selection.h;
 
         var output_ctx = output_canvas.getContext('2d');
-        output_ctx.drawImage(img, selection.x, selection.y, selection.w, selection.h, 0, 0, selection.w, selection.h);
+        output_ctx.drawImage(img, selection.x, selection.y, selection.w, selection.h, 0, 0, output_canvas.width, output_canvas.height);
         
         return output_canvas.toDataURL();
     }
 
-    var CropModal = function(dimension, callback) {
+    var CropModal = function(options, callback) {
         if(callback === undefined) callback = function(data) {};
         
         this.output = "data:text;base64,not set";
 
-        this.$modal = $('<div class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal">&times;</button><h4 class="modal-title">Crop Image</h4></div><div class="modal-body"></div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button><button type="button" class="btn btn-primary submit-crop" disabled>Submit cropping</button></div></div></div></div>').appendTo("body").modal({
+        this.$modal = $('<div class="modal fade"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal">&times;</button><h4 class="modal-title">Crop Image</h4></div><div class="modal-body"></div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button><button type="button" class="btn btn-primary submit-crop" disabled>Submit cropping</button></div></div></div></div>').appendTo("body").modal({
             backdrop: 'static'
         });
 
@@ -28,7 +30,7 @@ var cropper = (function($) {
 
             var set_output = function(selection) {
                 if(selection.h > 0 && selection.w > 0) {
-                    crop_modal.output = crop_image($img[0], selection);
+                    crop_modal.output = crop_image($img[0], selection, options.scaleWidth);
                 }
             }
 
@@ -40,8 +42,8 @@ var cropper = (function($) {
             $img.Jcrop({
                 bgColor: 'black',
                 bgOpacity: .6,
-                setSelect: [0, 0, dimension.x * 10, dimension.y * 10],
-                aspectRatio: dimension.x / dimension.y,
+                setSelect: [0, 0, 858, 858],
+                aspectRatio: options.aspectRatio,
                 onSelect: set_output,
                 onChange: set_output
             });
@@ -52,11 +54,11 @@ var cropper = (function($) {
         crop_image: function(file, selection) {
             return crop_image(file, selection);
         },
-        new_crop_modal: function(dimension, callback) {
-            return new CropModal(dimension, callback);
+        new_crop_modal: function(options, callback) {
+            return new CropModal(options, callback);
         },
-        prompt_crop_image: function(file, dimension, callback) {
-            var crop_modal = new CropModal(dimension, callback);
+        prompt_crop_image: function(file, options, callback) {
+            var crop_modal = new CropModal(options, callback);
 
             var reader = new FileReader();
             reader.onload = (function(img_file) {
@@ -65,7 +67,7 @@ var cropper = (function($) {
                     image.src = e.target.result;
                     image.onload = function() {
                         var canvas = document.createElement('canvas');
-                        canvas.width = 500;
+                        canvas.width = image.width < 858 ? image.width : 858;
                         canvas.height = image.height * (canvas.width / image.width);
                         var ctx = canvas.getContext('2d');
                         ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
@@ -81,13 +83,13 @@ var cropper = (function($) {
 })(jQuery);
 
 (function($) {
-    var register_trigger = function(dimensions, callback) {
+    var register_trigger = function(options, callback) {
         var start_cropping = function(e) {
             e.stopPropagation();
             e.preventDefault();
             var file = e.dataTransfer !== undefined ? e.dataTransfer.files[0] : e.target.files[0];
 
-            cropper.prompt_crop_image(file, dimensions, callback);
+            cropper.prompt_crop_image(file, options, callback);
         }
 
         this[0].addEventListener('click', function() {this.value = null;}, false);
