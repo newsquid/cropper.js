@@ -13,9 +13,15 @@ var cropper = (function($) {
     }
 
     var CropModal = function(options, callback) {
-        if(callback === undefined) callback = function(data) {};
+        if(callback === undefined) callback = function(data, proportions) {};
         
-        this.output = "data:text;base64,not set";
+        this.output_img = "data:text;base64,not set";
+        this.output_properties = {
+            height: 0,
+            width: 0,
+            x: 0,
+            y: 0
+        };
 
         this.$modal = $('<div class="modal fade"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal">&times;</button><h4 class="modal-title">Crop Image</h4></div><div class="modal-body"></div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button><button type="button" class="btn btn-primary submit-crop" disabled>Submit cropping</button></div></div></div></div>').appendTo("body").modal({
             backdrop: 'static'
@@ -32,10 +38,17 @@ var cropper = (function($) {
                 if(selection.h > 0 && selection.w > 0) {
                     crop_modal.output = crop_image($img[0], selection, options.scaleWidth);
                 }
+                
+                crop_modal.output_properties = {
+                    height: selection.h,
+                    width: selection.w,
+                    x: selection.x,
+                    y: selection.y
+                };
             }
 
             submit_crop_btn.click(function() {
-                callback(crop_modal.output);
+                callback(crop_modal.output, crop_modal.output_properties);
                 $modal.modal('hide');
             }).attr("disabled", null);
 
